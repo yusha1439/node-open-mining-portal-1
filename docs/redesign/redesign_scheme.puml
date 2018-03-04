@@ -1,5 +1,200 @@
 @startuml
 
-Bob -> Alice: Hello!
+
+
+
+rectangle Redis {
+    database redis [
+
+        Redis
+
+    ]
+}
+
+rectangle "Coin Daemons" as coin_daemons {
+    database sha256daemon [
+
+        SHA-256 coin
+        daemon
+
+    ]
+
+    database scryptdaemon [
+
+        Scrypt coin
+        daemon
+
+    ]
+
+}
+
+
+rectangle "node-open-mining-portal" <<NOMP>> {
+    interface RedisDAO as nomp_redis_dao
+
+    interface DaemonInterface as nomp_daemon_interface
+
+    nomp_redis_dao --> redis
+    nomp_redis_dao <- redis
+
+	node PaymentProcessing
+
+	PaymentProcessing <--> nomp_redis_dao
+	PaymentProcessing <--> nomp_daemon_interface
+
+	cloud "Frontend\n/\n<b>80" as frontend_port
+	cloud "REST API\n/api\n<b>80" as rest_port
+
+    nomp_daemon_interface -> sha256daemon
+    nomp_daemon_interface -> scryptdaemon
+
+    rest_port <--> nomp_redis_dao
+
+    frontend_port -> rest_port
+    frontend_port <- rest_port
+}
+
+
+rectangle "node-stratum-server" <<Stratum>> {
+    interface RedisDAO as nss_redis_dao
+    interface DaemonInterface as nss_daemon_interface
+
+
+    nss_redis_dao -> redis
+
+    interface "node-multi-hashing" as node_multi_hashing
+
+    note right of node_multi_hashing
+        Node interface for
+        C++ implentation of
+        different algorithms
+    end note
+
+    node ConnectionManager as connection_manager {
+     cloud "Stratum ports" as stratum_ports {
+            cloud "Stratum Port #1\nSHA256\n3032\ndiff 32" as stratum_port_1
+            cloud "Stratum Port #2\nSHA256\n3036\nvardiff" as stratum_port_2
+            cloud "Stratum Port #3\nScrypt\n4032\nvardiff" as stratum_port_3
+        }
+    }
+
+    node StratumController as stratum_controller {
+    }
+
+
+   node ShareProcessor {
+        agent "Check share" as check_share
+        agent "Block candidate" as block_candidate
+        agent "Low diff" as low_diff
+        agent "Reject share" as reject_share
+        agent "Daemon reject" as reject_daemon_reject
+        agent "Block accepted" as block_accepted
+
+        note top of check_share
+            Hash share
+            Check if a block candidate
+            Prepare for submit
+
+        end note
+        check_share --> reject_daemon_reject
+        check_share ---> low_diff
+        check_share --> block_candidate
+        check_share <|-down-|> node_multi_hashing
+
+
+        reject_daemon_reject -> reject_share
+        low_diff -> reject_share
+
+        block_candidate -down-> nss_daemon_interface : submit_block
+        nss_daemon_interface -> block_accepted
+        block_accepted -> nss_redis_dao
+
+        reject_share -down-> nss_redis_dao
+        reject_share --> stratum_controller : "mining.submit => Share rejected"
+    }
+
+
+    node JobManager as job_manager {
+        agent "Validate share" as validate_share
+        agent "Share valid" as share_valid
+        agent "Invalid share" as share_invalid
+
+        note right of validate_share
+            Auth
+            Share matched network diff (minerdiff)
+            Validity of data
+            Etc.
+        end note
+
+        validate_share --> share_valid
+        validate_share --> share_invalid
+
+        share_invalid -> redis
+        share_invalid -> stratum_controller : "mining.submit => Share rejected"
+        check_share <-right- share_valid
+
+    }
+
+    node AuthenticationModule as auth_module {
+
+    }
+
+    nss_daemon_interface <-> sha256daemon
+    nss_daemon_interface <-> scryptdaemon
+
+
+
+    connection_manager <-down-> stratum_controller: {MESSAGE}
+     note top of connection_manager
+         Holds connections
+         Send\Read messages
+         Prevent flood and spammings
+     end note
+
+    stratum_controller <|-up-|> auth_module : {mining.auth}
+    stratum_controller <|-down-|> validate_share : {mining.submit}
+
+}
+
+
+actor worker1 [
+    Miner (SHA256)
+]
+
+actor worker2 [
+    Miner (Scrypt)
+]
+
+actor worker3 [
+    Miner (SHA256)
+]
+
+
+actor user1 [
+    User
+]
+
+actor user2 [
+    User
+]
+
+actor user3 [
+    User
+]
+
+actor user4 [
+    User
+]
+
+worker3 <-up-> stratum_port_3
+worker2 <-up-> stratum_port_2
+worker1 <-up-> stratum_port_1
+
+
+
+user1 -down-> frontend_port
+user2 -down-> frontend_port
+user3 -down-> frontend_port
+user4 -down-> frontend_port
 
 @enduml
