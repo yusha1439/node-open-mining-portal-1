@@ -1,1 +1,5 @@
-!includeurl https://raw.githubusercontent.com/linux-china/plantuml-gist/master/src/main/uml/plantuml_gist.puml
+@startuml
+
+Bob -> Alice: Hello!
+
+@enduml
