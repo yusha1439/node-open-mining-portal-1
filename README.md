@@ -1,6 +1,6 @@
 ### We are trying to reborn NOMP. Need contributors!
 -------
-# Lyra2z (Zcoin) algo fixed, next step is neoscrypt
+# Neoscrypt algo fixed
 
 -------
 ### Node Open Mining Portal consists from 3 main modules:
@@ -43,12 +43,13 @@ You can see the logs of the server with ```docker logs -f nomp```, or jump into 
 #### Working
 |   | Algorithm | Comment|
 | ------------- | ------------- | ------------- |
-| ✓ | __Groestl__ | tested only shares with AuroraCoin, blocks not tested |
-| ✓ | __lyra2z__ | Working in testnet *mining* and *payouts* |
-| ✓ | __Scrypt__ | tested with AntiLiteCoin, 1CREDIT, ArgusCoin, WAYAWOLFCOIN and many others |
-| ✓ | __SHA256__ | tested with VCOIN, don't use with BTC, no Segwit tested |
-| ✓ | __X11__ | tested with BrainCoin, CannabisCoin, AdzCoin and many others |
-| ✓ | __X16r__ | tested with RavenCoin |
+| ✓ | __lyra2z__ | Working with Zcoin. Infinex need testing|
+| ✓ | __NeoScrypt__ | Onexcoin, working, need tests on other coins! |
+| ? | __Groestl__ | tested only shares with AuroraCoin, blocks not tested |
+| ? | __Scrypt__ | tested with AntiLiteCoin, 1CREDIT, ArgusCoin, WAYAWOLFCOIN and many others |
+| ? | __SHA256__ | tested with VCOIN, don't use with BTC, no Segwit tested |
+| ? | __X11__ | tested with BrainCoin, CannabisCoin, AdzCoin and many others |
+| ? | __X16r__ | tested with RavenCoin |
 
 #### Need tests
 |   | Algorithm | Comment|
@@ -71,7 +72,6 @@ You can see the logs of the server with ```docker logs -f nomp```, or jump into 
 | ? | __lyra2re2__ | need tests |
 | ? | __lyra2rev2__ | need tests |
 | ? | __lyra2z330__ | need tests |
-| ? | __NeoScrypt__ | working on it |
 | ? | __NIST5__ | need tests |
 | ? | __S3__ | need tests |
 | ? | __Scrypt-N__ | need tests |
@@ -101,8 +101,8 @@ There is a ```payment-fixes``` branch where i fixed previous blockHash problem a
 
 -------
 ### Credits
+* [devnulled](//github.com/devnull-ed) - Main maintainer, architecture
 * [a2hill](//github.com/a2hill) - helped with X16r
-* [devnulled](//github.com/devnull-ed) - helped with lyra2z, neoscrypt algo
 * [Kris Klosterman / krisklosterman](https://github.com/krisklosterman) - Updated code for work wiht Node.JS >=8
 * [Jerry Brady / mintyfresh68](https://github.com/bluecircle) - got coin-switching fully working and developed proxy-per-algo feature
 * [Tony Dobbs](http://anthonydobbs.com) - designs for front-end and created the NOMP logo
