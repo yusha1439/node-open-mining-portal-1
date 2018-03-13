@@ -27,3 +27,8 @@
 
 ## v1.0.7
 * https://github.com/foxer666/node-open-mining-portal/issues/36 hotfix
+
+## v1.0.8
+* Updated modules
+* Fixed neoscrypt
+* https://github.com/foxer666/node-open-mining-portal/issues/3
