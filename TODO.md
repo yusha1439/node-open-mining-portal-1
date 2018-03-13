@@ -8,3 +8,4 @@ Order is priority
 6) Move modules in one project
 7) Write different log level at one time
 8) Documentation
+9) https://github.com/foxer666/node-open-mining-portal/issues/3
