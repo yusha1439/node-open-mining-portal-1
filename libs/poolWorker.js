@@ -9,6 +9,7 @@ const loggerFactory = require('./logger.js');
 
 module.exports = function () {
     let logger = loggerFactory.getLogger('PoolWorker', 'system');
+    this.logger = logger;
 
     var _this = this;
 
@@ -24,11 +25,11 @@ module.exports = function () {
     var redisClient = redis.createClient(portalConfig.redis.port, portalConfig.redis.host);
 
     //Handle messages from master process sent via IPC
-    process.on('message', function (message) {
+    process.on('message', (message) => {
         switch (message.type) {
 
             case 'banIP':
-                logger.silly('incoming banip message');
+                _this.logger.silly('incoming banip message');
                 for (var p in pools) {
                     if (pools[p].stratumServer)
                         pools[p].stratumServer.addBannedIP(message.ip);
@@ -36,7 +37,7 @@ module.exports = function () {
                 break;
 
             case 'blocknotify':
-                logger.silly('incoming blocknotify message');
+                _this.logger.silly('incoming blocknotify message');
 
                 var messageCoin = message.coin.toLowerCase();
                 var poolTarget = Object.keys(pools).filter(function (p) {
@@ -50,7 +51,7 @@ module.exports = function () {
 
             // IPC message for pool switching
             case 'coinswitch':
-                logger.silly('incoming coinswitch message');
+                _this.logger.silly('incoming coinswitch message');
                 let componentStr = `Proxy Switch [:${(parseInt(forkId) + 1)}]`;
 
                 let logger = loggerFactory.getLogger(componentStr, coin);
