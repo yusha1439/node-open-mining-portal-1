@@ -32,3 +32,6 @@
 * Updated modules
 * Fixed neoscrypt
 * https://github.com/foxer666/node-open-mining-portal/issues/3
+
+## v1.0.9
+* https://github.com/foxer666/node-open-mining-portal/issues/56
