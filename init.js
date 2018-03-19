@@ -110,14 +110,14 @@ var buildPoolConfigs = function () {
             var portsF = Object.keys(poolConfigFiles[f].ports);
             for (var g = 0; g < portsF.length; g++) {
                 if (ports.indexOf(portsF[g]) !== -1) {
-                    logger.error(poolConfigFiles[f].fileName, 'Has same configured port of ' + portsF[g] + ' as ' + poolConfigFiles[i].fileName);
+                    logger.error("%s Has same configured port of %s as %s", poolConfigFiles[f].fileName, portsF[g], poolConfigFiles[i].fileName);
                     process.exit(1);
                     return;
                 }
             }
 
             if (poolConfigFiles[f].coin === poolConfigFiles[i].coin) {
-                logger.error(poolConfigFiles[f].fileName, 'Pool has same configured coin file coins/' + poolConfigFiles[f].coin + ' as ' + poolConfigFiles[i].fileName + ' pool');
+                logger.error('%s Pool has same configured coin file coins/%s as %s pool', poolConfigFiles[f].fileName, poolConfigFiles[f].coin, poolConfigFiles[i].fileName);
                 process.exit(1);
                 return;
             }
@@ -142,11 +142,12 @@ var buildPoolConfigs = function () {
 
         if (poolOptions.coin.name in configs) {
 
-            //todo string interpolation
-            logger.error('%s coins/' + poolOptions.coinFileName
-                + ' has same configured coin name ' + poolOptions.coin.name + ' as coins/'
-                + configs[poolOptions.coin.name].coinFileName + ' used by pool config '
-                + configs[poolOptions.coin.name].fileName, poolOptions.fileName);
+            logger.error('%s coins/%s has same configured coin name %s as coins/%s used by pool config %s',
+                poolOptions.fileName,
+                poolOptions.coinFileName,
+                poolOptions.coin.name,
+                configs[poolOptions.coin.name].coinFileName,
+                configs[poolOptions.coin.name].fileName);
 
             process.exit(1);
             return;
@@ -169,7 +170,7 @@ var buildPoolConfigs = function () {
         configs[poolOptions.coin.name] = poolOptions;
 
         if (!(coinProfile.algorithm in algos)) {
-            logger.error('[%s] Cannot run a pool for unsupported algorithm "' + coinProfile.algorithm + '"', coinProfile.name);
+            logger.error('[%s] Cannot run a pool for unsupported algorithm %s', coinProfile.name, coinProfile.algorithm);
             delete configs[poolOptions.coin.name];
         }
 
