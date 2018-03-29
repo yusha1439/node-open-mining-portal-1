@@ -38,3 +38,6 @@
 
 ## v1.0.10
 * https://github.com/foxer666/node-open-mining-portal/issues/56
+
+## v1.0.11
+* https://github.com/foxer666/node-open-mining-portal/issues/73
